@@ -1,36 +1,20 @@
 
 ## Challenge to scrape AFLW stats from web and do data viz
-## 21 March 2021
+## 26 March 2021
 ## Burnet Coding and Software Club 2021
 
 #setwd("/Users/sachintha/projects/AFL_fitzRoy/")
 
- install.packages("fitzRoy")
+#install.packages("fitzRoy")
 # https://jimmyday12.github.io/fitzRoy/articles/womens-stats.html
 
 #---------------
-
 library(fitzRoy)
-library(dplyr)
 library(tidyverse)
 #---------------
 #---------------
 # fetch data
-
-year <- c("2017", "2018", "2019", "2020", "2021")
-round <- c(1,2,3,4,5,6,7)
-
-
-alfwr1_2020 <- fetch_player_stats(2020, round_number = 1, comp = "AFLW") 
-alfwr2_2020 <- fetch_player_stats(2020, round_number = 2, comp = "AFLW") 
-alfwr3_2020 <- fetch_player_stats(2020, round_number = 3, comp = "AFLW") 
-alfwr4_2020 <- fetch_player_stats(2020, round_number = 4, comp = "AFLW") 
-alfwr5_2020 <- fetch_player_stats(2020, round_number = 5, comp = "AFLW") 
-alfwr6_2020 <- fetch_player_stats(2020, round_number = 6, comp = "AFLW") 
-alfwr7_2020 <- fetch_player_stats(2020, round_number = 7, comp = "AFLW") 
-#alfwr8_2020 <- fetch_player_stats(2020, round_number = 8, comp = "AFLW") 
-#alfwr9_2020 <- fetch_player_stats(2020, round_number = 9, comp = "AFLW") 
-
+#Wok with player stats
 
 #Lest see what the fetch_player_stats is about
 ?fetch_player_stats
@@ -60,35 +44,26 @@ unique(season_2020$away.team.club.name)
 unique(season_2020$team.name)
 
 
-
-
-
-
-
-
-
 #based on the colnames colum 16 was player 1st name and 17 was last name
 #lets combne them for easier analysis
-all_rounds <- unite(all_rounds, player_full_name, 16:17, remove = FALSE )
+season_2020 <- unite(season_2020, player_full_name, 16:17, remove = FALSE )
+View(season_2020)
 
-all_rounds_all_years <- fetch_player_stats(comp = "AFLW")
-unique(all_rounds_all_years$compSeason.shortName)
 
-colnames(all_rounds_all_years)
-plo
+richmond_2020 <- filter(.data = season_2020,season_2020$team.name=="Richmond")
 
-View(all_rounds)
-?unite
 
-#for (rounds in c(1:7)) {
-#  rounds <- fetch_player_stats(2020, round_number = rounds, comp = "AFLW")
+richmond_2020$shotEfficiency
 
-#}
+plot_rich_ef_shot <- richmond_2020 %>%
+  ggplot(mapping = aes(x = player_full_name, y = metresGained )) + 
+  geom_col() + coord_flip()
 
 
 
+plot_rich_ef_shot
+ggsave("figures/metersGained_richmond.pdf", plot_rich_ef_shot)
 
-colnames(alfwr1_2020)
 
 
 ## END
